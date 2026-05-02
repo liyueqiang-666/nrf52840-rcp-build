@@ -18,14 +18,14 @@ jobs:
     steps:
       - name: Prepare directories
         run: |
-          set -euxo pipefail
+          set -exo pipefail
           mkdir -p /tmp/matter-build
           mkdir -p "$GITHUB_WORKSPACE/out"
           git config --global --add safe.directory '*'
 
       - name: Clone Matter SDK
         run: |
-          set -euxo pipefail
+          set -exo pipefail
           cd /tmp/matter-build
           git clone --depth 1 https://github.com/project-chip/connectedhomeip.git
           cd connectedhomeip
@@ -33,14 +33,18 @@ jobs:
 
       - name: Build chip-tool for Raspberry Pi arm64
         run: |
-          set -euxo pipefail
+          set -exo pipefail
           cd /tmp/matter-build/connectedhomeip
+
+          set +u
           source scripts/activate.sh
+          set -u
+
           ./scripts/build/build_examples.py --target linux-arm64-chip-tool-clang build
 
       - name: Collect chip-tool
         run: |
-          set -euxo pipefail
+          set -exo pipefail
           cd /tmp/matter-build/connectedhomeip
           find build -name chip-tool -type f -print
           CHIP_TOOL=$(find build -name chip-tool -type f | head -n 1)
