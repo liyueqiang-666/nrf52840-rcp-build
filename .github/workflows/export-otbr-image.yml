@@ -1,0 +1,25 @@
+name: Export OTBR Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Pull OTBR image
+        run: |
+          docker pull openthread/border-router:latest
+          docker images openthread/border-router:latest
+
+      - name: Save image
+        run: |
+          docker save openthread/border-router:latest | gzip > otbr-image.tar.gz
+          ls -lh otbr-image.tar.gz
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: otbr-image
+          path: otbr-image.tar.gz
