@@ -81,25 +81,9 @@ jobs:
           ls -lh /work/out/zephyr.hex
           head -n 3 /work/out/zephyr.hex
 
-      - name: Create DFU ZIP
-        run: |
-          set -euxo pipefail
-
-          cd /work/out
-
-          nrfutil nrf5sdk-tools pkg generate \
-            --hw-version 52 \
-            --sd-req 0x00 \
-            --application zephyr.hex \
-            --application-version 20 \
-            zephyr.zip
-
-          ls -lh /work/out/zephyr.zip
-
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: nrf52840dongle-rcp-firmware
           path: |
             /work/out/zephyr.hex
-            /work/out/zephyr.zip
